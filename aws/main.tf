@@ -37,3 +37,10 @@ variable "public_route" {
   description = "Public route"
   default     = "0.0.0.0/0"
 }
+
+# variable for the EC2 instance type
+variable "ec2_instance_type" {
+  type        = string
+  description = "EC2 Instance Type"
+  default     = "t2.micro"
+}
