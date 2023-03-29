@@ -30,3 +30,10 @@ variable "private_sub_cidrs" {
   description = "Private Subnet CIDR's"
   default     = ["10.1.3.0/24", "10.1.4.0/24"]
 }
+
+# variable for the (0.0.0.0/0) public route
+variable "public_route" {
+  type        = string
+  description = "Public route"
+  default     = "0.0.0.0/0"
+}
