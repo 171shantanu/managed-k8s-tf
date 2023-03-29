@@ -18,7 +18,7 @@ variable "environment" {
 }
 
 # varibale for the CIDR of the public subnets 
-variable "public_sub_cidr" {
+variable "public_sub_cidrs" {
   type        = list(string)
   description = "public subnet 1 CIDR"
   default     = ["10.1.1.0/24", "10.1.2.0/24"]
