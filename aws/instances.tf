@@ -44,7 +44,7 @@ resource "local_file" "k8s_key_private" {
   content  = tls_private_key.rsa_k8s.private_key_pem
   filename = "k8s-key.pem"
   lifecycle {
-    prevent_destroy = trues
+    prevent_destroy = true
   }
 }
 
