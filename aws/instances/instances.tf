@@ -31,6 +31,11 @@ resource "aws_instance" "k8s_master_node" {
   }
 }
 
+# Resource block for the EBS volume of the Master Node Instance.
+resource "aws_ebs_volume" "master_node_ebs_volume" {
+  availability_zone = module.aws.data.aws_availability_zones.az
+}
+
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
 resource "aws_instance" "k8s_worker_nodes" {
   count         = 2
