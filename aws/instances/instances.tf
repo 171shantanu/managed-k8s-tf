@@ -74,7 +74,7 @@ resource "aws_instance" "k8s_worker_nodes" {
     volume_size = 10
     volume_type = "gp2"
     tags = {
-      "Name" = "K8s-master-node-ebs-volume"
+      "Name" = "K8s-worker-node-${count.index + 1}-ebs-volume"
       "Size" = "10"
     }
   }
