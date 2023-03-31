@@ -48,6 +48,12 @@ resource "aws_ebs_volume" "master_node_ebs_volume" {
     "Size" = "10"
   }
 }
+s
+resource "aws_volume_attachment" "master_node_volume_attachment" {
+  device_name = "/dev/sda1"
+  volume_id = aws_ebs_volume.master_node_ebs_volume.id
+  instance_id = aws_instance.k8s_master_node.id
+}
 
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
 resource "aws_instance" "k8s_worker_nodes" {
