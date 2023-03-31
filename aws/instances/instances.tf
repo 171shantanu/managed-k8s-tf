@@ -20,37 +20,6 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-# Resources for the key pair for the instances
-resource "aws_key_pair" "k8s_key" {
-  key_name   = "self-k8s-key"
-  public_key = tls_private_key.rsa_k8s.public_key_openssh
-  depends_on = [tls_private_key.rsa_k8s]
-  lifecycle {
-    prevent_destroy = true
-  }
-  tags = {
-    "Name" = "${local.name_suffix}-key-pair"
-  }
-}
-
-# Generating a rsa key for the ec2 instances to get the public key
-resource "tls_private_key" "rsa_k8s" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-# Strping the private key in the local using a local file resource block
-resource "local_file" "k8s_key_private" {
-  content  = tls_private_key.rsa_k8s.private_key_pem
-  filename = "k8s-key.pem"
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 # Resource block for the AWS EC2 Instance. (Master Node)
 resource "aws_instance" "k8s_master_node" {
   ami           = data.aws_ami.ubuntu.id
@@ -58,11 +27,11 @@ resource "aws_instance" "k8s_master_node" {
   key_name      = aws_key_pair.k8s_key.key_name
 
   tags = {
-    "Name" = "K8s-master-node"
+    "Name" = "K8s-master-node-1"
   }
 }
 
-# Resource block for the AWS EC2 Instance. (Worker Nodes)
+# Resource block for the AWS EC2 Instances. (Worker Nodes)
 resource "aws_instance" "k8s_worker_nodes" {
   count         = 2
   ami           = data.aws_ami.ubuntu.id
@@ -70,6 +39,6 @@ resource "aws_instance" "k8s_worker_nodes" {
   key_name      = aws_key_pair.k8s_key.key_name
 
   tags = {
-    "Name" = "K8s-worker-node"
+    "Name" = "K8s-worker-node-2"
   }
 }
