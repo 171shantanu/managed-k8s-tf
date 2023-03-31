@@ -23,7 +23,7 @@ resource "tls_private_key" "rsa_k8s" {
 # Strping the private key in the local using a local file resource block
 resource "local_file" "k8s_key_private" {
   content  = tls_private_key.rsa_k8s.private_key_pem
-  filename = "k8s-key.pem"
+  filename = "self-k8s-key.pem"
   lifecycle {
     prevent_destroy = true
   }

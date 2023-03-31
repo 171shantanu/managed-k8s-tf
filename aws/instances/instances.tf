@@ -25,43 +25,41 @@ data "aws_availability_zones" "az" {
   state = "available"
 }
 
+# Data block for the ID of public subnet 1
+data "aws_subnet" "public_1" {
+  filter {
+    name   = "tag:Name"
+    values = ["${local.name_suffix}-public-subnet-1"]
+  }
+}
+
+# Data block for the ID of public subnet 2
+data "aws_subnet" "public_2" {
+  filter {
+    name   = "tag:Name"
+    values = ["${local.name_suffix}-public-subnet-2"]
+  }
+}
+
 # Resource block for the AWS EC2 Instance. (Master Node)
 resource "aws_instance" "k8s_master_node" {
   ami               = data.aws_ami.ubuntu.id
   instance_type     = var.ec2_instance_type
   key_name          = aws_key_pair.k8s_key.key_name
   availability_zone = data.aws_availability_zones.az.names[0]
+  subnet_id         = data.aws_subnet.public_1.id
+  root_block_device {
+    volume_size = 10
+    volume_type = "gp2"
+    tags = {
+      "Name" = "K8s-master-node-ebs-volume"
+      "Size" = "10"
+    }
+  }
   tags = {
     "Name" = "K8s-master-node"
     "AZ"   = "${data.aws_availability_zones.az.names[0]}"
   }
-}
-
-# Resource block for the EBS volume of the Master Node Instance.
-resource "aws_ebs_volume" "master_node_ebs_volume" {
-  availability_zone = data.aws_availability_zones.az.names[0]
-  size              = 10
-  type              = "gp2"
-
-  tags = {
-    "Name" = "K8s-master-node-ebs-volume"
-    "Size" = "10"
-  }
-  depends_on = [
-    aws_instance.k8s_master_node
-  ]
-}
-
-# Attaching EBS Volume to the Master Node 
-resource "aws_volume_attachment" "master_node_volume_attachment" {
-  device_name = "/dev/sda1"
-  volume_id   = aws_ebs_volume.master_node_ebs_volume.id
-  instance_id = aws_instance.k8s_master_node.id
-
-  depends_on = [
-    aws_ebs_volume.master_node_ebs_volume,
-    aws_instance.k8s_master_node
-  ]
 }
 
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
@@ -70,36 +68,18 @@ resource "aws_instance" "k8s_worker_nodes" {
   ami               = data.aws_ami.ubuntu.id
   instance_type     = var.ec2_instance_type
   key_name          = aws_key_pair.k8s_key.key_name
-  availability_zone = count.index % 2 == 0 ? data.aws_availability_zones.az.names[0] : data.aws_availability_zones.az.names[1]
+  availability_zone = data.aws_availability_zones.az.names[count.index]
+  subnet_id         = count.index == 0 ? data.aws_subnet.public_1.id : data.aws_subnet.public_2.id
+  root_block_device {
+    volume_size = 10
+    volume_type = "gp2"
+    tags = {
+      "Name" = "K8s-master-node-ebs-volume"
+      "Size" = "10"
+    }
+  }
 
   tags = {
     "Name" = "K8s-worker-node-${count.index + 1}"
   }
-}
-
-# Resource block for the EBS volume of the Worker Node Instance.
-resource "aws_ebs_volume" "worker_node_ebs_volume" {
-  count             = 2
-  availability_zone = data.aws_availability_zones.az.names[count.index]
-  type              = "gp2"
-  size              = 10
-  tags = {
-    "Name" = "K8s-worker-node-${count.index + 1}-ebs-volume"
-    "Size" = "10"
-  }
-  depends_on = [
-    aws_instance.k8s_worker_nodes
-  ]
-}
-
-resource "aws_volume_attachment" "worker_node_volume-attch" {
-  count       = 2
-  device_name = "/dev/sda1"
-  volume_id   = aws_ebs_volume.worker_node_ebs_volume[count.index].id
-  instance_id = aws_instance.k8s_worker_nodes[count.index].id
-
-  depends_on = [
-    aws_ebs_volume.worker_node_ebs_volume,
-    aws_instance.k8s_worker_nodes
-  ]
 }
