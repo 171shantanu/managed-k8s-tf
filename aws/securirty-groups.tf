@@ -9,20 +9,20 @@ resource "aws_security_group" "public_sg" {
   description = "Allows Acces on PORT 22,80 & 443"
   vpc_id      = aws_vpc.k8s_vpc.id
 
-  ingress = {
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${chomp(data.http.my_ip.body)}/32"]
     description = "Allowing SSH access from my computer"
   }
-  egress = [{
+  egress {
     cidr_blocks = ["${chomp(data.http.my_ip.body)}/32"]
     description = "Allowing SSH access from my computer"
     from_port   = 22
     protocol    = "tcp"
     to_port     = 22
-  }]
+  }
 
   tags = {
     "Name"  = "${local.name_suffix}-Public-SG"
