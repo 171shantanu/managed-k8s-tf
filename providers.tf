@@ -24,10 +24,5 @@ provider "aws" {
 }
 
 provider "http" {
-  default_tags {
-    tags = {
-      managed_by = "Terraform Managed resource"
-      project    = "Self Managed K8s"
-    }
-  }
+  version = ">=3.2.1"
 }
