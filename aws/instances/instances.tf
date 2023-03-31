@@ -28,6 +28,9 @@ resource "aws_key_pair" "k8s_key" {
   lifecycle {
     prevent_destroy = true
   }
+  tags = {
+    "Name" = "${local.name_suffix}-key-pair"
+  }
 }
 
 # Generating a rsa key for the ec2 instances to get the public key
@@ -48,9 +51,25 @@ resource "local_file" "k8s_key_private" {
   }
 }
 
-# Resource block for the AWS EC2 Instance.
+# Resource block for the AWS EC2 Instance. (Master Node)
 resource "aws_instance" "k8s_master_node" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.ec2_instance_type
   key_name      = aws_key_pair.k8s_key.key_name
+
+  tags = {
+    "Name" = "K8s-master-node"
+  }
+}
+
+# Resource block for the AWS EC2 Instance. (Worker Nodes)
+resource "aws_instance" "k8s_worker_nodes" {
+  count         = 2
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.ec2_instance_type
+  key_name      = aws_key_pair.k8s_key.key_name
+
+  tags = {
+    "Name" = "K8s-worker-node"
+  }
 }

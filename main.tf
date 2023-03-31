@@ -8,6 +8,11 @@ module "aws" {
   source = "./aws"
 }
 
+# declaring the aws/instances module
+module "instances" {
+  source = "./aws/instances"
+}
+
 # variable for project
 variable "project" {
   type        = string
