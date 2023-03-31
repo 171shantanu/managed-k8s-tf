@@ -20,11 +20,17 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+# Data block for availabilty zone
+data "aws_availability_zones" "az" {
+  state = "available"
+}
+
 # Resource block for the AWS EC2 Instance. (Master Node)
 resource "aws_instance" "k8s_master_node" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.ec2_instance_type
-  key_name      = aws_key_pair.k8s_key.key_name
+  ami               = data.aws_ami.ubuntu.id
+  instance_type     = var.ec2_instance_type
+  key_name          = aws_key_pair.k8s_key.key_name
+  availability_zone = data.aws_availability_zones.az[0]
 
   tags = {
     "Name" = "K8s-master-node-1"
@@ -33,7 +39,7 @@ resource "aws_instance" "k8s_master_node" {
 
 # Resource block for the EBS volume of the Master Node Instance.
 resource "aws_ebs_volume" "master_node_ebs_volume" {
-  availability_zone = module.aws.data.aws_availability_zones.az
+  availability_zone = data.aws_availability_zones.az[0]
 }
 
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
