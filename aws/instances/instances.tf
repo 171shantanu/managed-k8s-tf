@@ -30,16 +30,23 @@ resource "aws_instance" "k8s_master_node" {
   ami               = data.aws_ami.ubuntu.id
   instance_type     = var.ec2_instance_type
   key_name          = aws_key_pair.k8s_key.key_name
-  availability_zone = data.aws_availability_zones.az[0]
-
+  availability_zone = data.aws_availability_zones.az.names[0]
   tags = {
-    "Name" = "K8s-master-node-1"
+    "Name" = "K8s-master-node"
+    "AZ"   = "${data.aws_availability_zones.az.names[0]}"
   }
 }
 
 # Resource block for the EBS volume of the Master Node Instance.
 resource "aws_ebs_volume" "master_node_ebs_volume" {
-  availability_zone = data.aws_availability_zones.az[0]
+  availability_zone = data.aws_availability_zones.az.names[0]
+  size              = 10
+  type              = "gp2"
+
+  tags = {
+    "Name" = "K8s-master-node-ebs-volume"
+    "Size" = "10"
+  }
 }
 
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
@@ -50,6 +57,7 @@ resource "aws_instance" "k8s_worker_nodes" {
   key_name      = aws_key_pair.k8s_key.key_name
 
   tags = {
-    "Name" = "K8s-worker-node-2"
+    "Name" = "K8s-worker-node-${count.index}"
   }
 }
+
