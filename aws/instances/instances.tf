@@ -72,6 +72,14 @@ resource "aws_instance" "k8s_master_node" {
   }
 }
 
+# Data block for getting the worker node Security group
+data "aws_security_group" "worker_node_sg" {
+  filter {
+    name   = "tag:Name"
+    values = ["${local.name_suffix}-Worker-Node-SG"]
+  }
+}
+
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
 resource "aws_instance" "k8s_worker_nodes" {
   count                  = 2
@@ -80,6 +88,8 @@ resource "aws_instance" "k8s_worker_nodes" {
   key_name               = aws_key_pair.k8s_key.key_name
   availability_zone      = data.aws_availability_zones.az.names[count.index]
   subnet_id              = count.index == 0 ? data.aws_subnet.public_1.id : data.aws_subnet.public_2.id
+  vpc_security_group_ids = [data.aws_security_group.worker_node_sg.id]
+
   root_block_device {
     volume_size = 10
     volume_type = "gp2"
