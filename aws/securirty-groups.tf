@@ -81,7 +81,7 @@ resource "aws_security_group" "master_node_sg" {
 }
 
 # Resource block for security group for the worker node
-/*resource "aws_security_group" "worker_node_sg" {
+resource "aws_security_group" "worker_node_sg" {
   name        = "Public_SG"
   description = "Allows Acces on PORT 22,80 & 443"
   vpc_id      = aws_vpc.k8s_vpc.id
@@ -104,5 +104,30 @@ resource "aws_security_group" "master_node_sg" {
     protocol    = "tcp"
     to_port     = 22
   }
+
+  # Ingress for port 10250
+  ingress {
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Allowing port for the Kubelet API from the VPC network only"
+  }
+
+  # Ingress for port 30000-32767
+  ingress {
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allowing port for the Kubelet API from the VPC network only"
+  } 
+
+  tags = {
+    "Name"    = "${local.name_suffix}-Worker-Node-SG"
+    "Ports"   = "22, 10250, 30000-32767"
+    "Purpose" = "SG-for-Worker-Node"
+  }
 }
-*/
+
+
