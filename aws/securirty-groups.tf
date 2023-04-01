@@ -55,9 +55,18 @@ resource "aws_security_group" "public_sg" {
     protocol    = "tcp"
   }
 
+  # Ingress for port 10257
+  ingress {
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Allowing port for the Kube-scheduler from the VPC network only"
+    from_port   = 10257
+    to_port     = 10257
+    protocol    = "tcp"
+  }
+
 
   tags = {
     "Name"  = "${local.name_suffix}-Public-SG"
-    "Ports" = "22, 2379-2380, 6443, 10250"
+    "Ports" = "22, 2379-2380, 6443, 10250, 10257"
   }
 }
