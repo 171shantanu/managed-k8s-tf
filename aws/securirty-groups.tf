@@ -43,12 +43,21 @@ resource "aws_security_group" "public_sg" {
     description = "Allowing port for etcd server client API from the VPC network only"
     from_port   = 2379
     protocol    = "tcp"
-    self        = false
     to_port     = 2380
   }
 
+  # Ingress for port 10250
+  ingress {
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Allowing port for the Kubelet API from the VPC network only"
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+  }
+
+
   tags = {
     "Name"  = "${local.name_suffix}-Public-SG"
-    "Ports" = "22, 2379-2380, 6443"
+    "Ports" = "22, 2379-2380, 6443, 10250"
   }
 }
