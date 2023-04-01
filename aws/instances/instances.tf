@@ -41,6 +41,14 @@ data "aws_subnet" "public_2" {
   }
 }
 
+# Data block for getting the Security group
+data "aws_security_group" "public_sg" {
+  filter {
+    name = "tag:Name"
+    values = ["${local.name_suffix}-Public-SG"]
+  }
+}
+
 # Resource block for the AWS EC2 Instance. (Master Node)
 resource "aws_instance" "k8s_master_node" {
   ami               = data.aws_ami.ubuntu.id
@@ -48,6 +56,7 @@ resource "aws_instance" "k8s_master_node" {
   key_name          = aws_key_pair.k8s_key.key_name
   availability_zone = data.aws_availability_zones.az.names[0]
   subnet_id         = data.aws_subnet.public_1.id
+  secu
   root_block_device {
     volume_size = 10
     volume_type = "gp2"

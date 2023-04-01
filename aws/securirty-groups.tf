@@ -33,5 +33,3 @@ resource "aws_security_group" "public_sg" {
     "Ports" = "22, 80, 443"
   }
 }
-
-# Resource block for the SG Rule for port 22 Ingress 
