@@ -4,9 +4,9 @@ data "http" "my_ip" {
 }
 
 # Resource block for the SG
-resource "aws_security_group" "public_sg" {
-  name        = "Public_SG"
-  description = "Allows Acces on PORT 22,80 & 443"
+resource "aws_security_group" "master_node_sg" {
+  name        = "Master_Node_SG"
+  description = "SG for the master node"
   vpc_id      = aws_vpc.k8s_vpc.id
 
   # Ingress for port 22
@@ -74,7 +74,35 @@ resource "aws_security_group" "public_sg" {
   }
 
   tags = {
-    "Name"  = "${local.name_suffix}-Public-SG"
-    "Ports" = "22, 2379-2380, 6443, 10250, 10257"
+    "Name"    = "${local.name_suffix}-Master-Node-SG"
+    "Ports"   = "22, 2379-2380, 6443, 10250, 10257"
+    "Purpose" = "SG-for-Master-Node"
   }
 }
+
+# Resource block for security group for the worker node
+/*resource "aws_security_group" "worker_node_sg" {
+  name        = "Public_SG"
+  description = "Allows Acces on PORT 22,80 & 443"
+  vpc_id      = aws_vpc.k8s_vpc.id
+
+  # Ingress for port 22
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    description = "Allowing SSH access from my computer"
+  }
+
+  # Engress for port 22
+  egress {
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    description = "Allowing SSH access from my computer"
+    from_port   = 22
+    protocol    = "tcp"
+    to_port     = 22
+  }
+}
+*/

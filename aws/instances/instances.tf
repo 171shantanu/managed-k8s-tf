@@ -41,11 +41,11 @@ data "aws_subnet" "public_2" {
   }
 }
 
-# Data block for getting the Public Security group
-data "aws_security_group" "public_sg" {
+# Data block for getting the master node Security group
+data "aws_security_group" "master_node_sg" {
   filter {
     name   = "tag:Name"
-    values = ["${local.name_suffix}-Public-SG"]
+    values = ["${local.name_suffix}-Master-Node-SG"]
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_instance" "k8s_master_node" {
   key_name               = aws_key_pair.k8s_key.key_name
   availability_zone      = data.aws_availability_zones.az.names[0]
   subnet_id              = data.aws_subnet.public_1.id
-  vpc_security_group_ids = [data.aws_security_group.public_sg.id]
+  vpc_security_group_ids = [data.aws_security_group.master_node_sg.id]
 
   root_block_device {
     volume_size = 10
@@ -80,7 +80,6 @@ resource "aws_instance" "k8s_worker_nodes" {
   key_name               = aws_key_pair.k8s_key.key_name
   availability_zone      = data.aws_availability_zones.az.names[count.index]
   subnet_id              = count.index == 0 ? data.aws_subnet.public_1.id : data.aws_subnet.public_2.id
-  vpc_security_group_ids = [data.aws_security_group.public_sg.id]
   root_block_device {
     volume_size = 10
     volume_type = "gp2"
