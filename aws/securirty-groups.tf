@@ -64,6 +64,14 @@ resource "aws_security_group" "public_sg" {
     protocol    = "tcp"
   }
 
+  # Ingress for port 10259
+  ingress {
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Allowing port for the Kube-controller-manager from the VPC network only"
+    from_port   = 10259
+    to_port     = 10259
+    protocol    = "tcp"
+  }
 
   tags = {
     "Name"  = "${local.name_suffix}-Public-SG"
