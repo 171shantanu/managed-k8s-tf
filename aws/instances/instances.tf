@@ -41,22 +41,23 @@ data "aws_subnet" "public_2" {
   }
 }
 
-# Data block for getting the Security group
+# Data block for getting the Public Security group
 data "aws_security_group" "public_sg" {
   filter {
-    name = "tag:Name"
+    name   = "tag:Name"
     values = ["${local.name_suffix}-Public-SG"]
   }
 }
 
 # Resource block for the AWS EC2 Instance. (Master Node)
 resource "aws_instance" "k8s_master_node" {
-  ami               = data.aws_ami.ubuntu.id
-  instance_type     = var.ec2_instance_type
-  key_name          = aws_key_pair.k8s_key.key_name
-  availability_zone = data.aws_availability_zones.az.names[0]
-  subnet_id         = data.aws_subnet.public_1.id
-  secu
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.ec2_instance_type
+  key_name               = aws_key_pair.k8s_key.key_name
+  availability_zone      = data.aws_availability_zones.az.names[0]
+  subnet_id              = data.aws_subnet.public_1.id
+  vpc_security_group_ids = [data.aws_security_group.public_sg.id]
+
   root_block_device {
     volume_size = 10
     volume_type = "gp2"
@@ -73,12 +74,13 @@ resource "aws_instance" "k8s_master_node" {
 
 # Resource block for the AWS EC2 Instances. (Worker Nodes)
 resource "aws_instance" "k8s_worker_nodes" {
-  count             = 2
-  ami               = data.aws_ami.ubuntu.id
-  instance_type     = var.ec2_instance_type
-  key_name          = aws_key_pair.k8s_key.key_name
-  availability_zone = data.aws_availability_zones.az.names[count.index]
-  subnet_id         = count.index == 0 ? data.aws_subnet.public_1.id : data.aws_subnet.public_2.id
+  count                  = 2
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.ec2_instance_type
+  key_name               = aws_key_pair.k8s_key.key_name
+  availability_zone      = data.aws_availability_zones.az.names[count.index]
+  subnet_id              = count.index == 0 ? data.aws_subnet.public_1.id : data.aws_subnet.public_2.id
+  vpc_security_group_ids = [data.aws_security_group.public_sg.id]
   root_block_device {
     volume_size = 10
     volume_type = "gp2"

@@ -28,6 +28,15 @@ resource "aws_security_group" "public_sg" {
     to_port     = 22
   }
 
+  # Ingress for port 6443
+  ingress {
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Default Port for K8s API Server)"
+  }
+
   tags = {
     "Name"  = "${local.name_suffix}-Public-SG"
     "Ports" = "22, 80, 443"
