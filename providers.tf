@@ -23,6 +23,4 @@ provider "aws" {
   }
 }
 
-provider "http" {
-  version = ">=3.2.1"
-}
+provider "http" {}
