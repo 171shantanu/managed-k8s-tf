@@ -37,8 +37,18 @@ resource "aws_security_group" "public_sg" {
     description = "Default Port for K8s API Server)"
   }
 
+  # Ingress for port 2379-2380
+  ingress {
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Allowing port for etcd server client API from the VPC network only"
+    from_port   = 2379
+    protocol    = "tcp"
+    self        = false
+    to_port     = 2380
+  }
+
   tags = {
     "Name"  = "${local.name_suffix}-Public-SG"
-    "Ports" = "22, 80, 443"
+    "Ports" = "22, 2379-2380, 6443"
   }
 }
