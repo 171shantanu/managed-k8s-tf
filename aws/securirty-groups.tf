@@ -120,8 +120,8 @@ resource "aws_security_group" "worker_node_sg" {
     to_port     = 32767
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allowing port for the Kubelet API from the VPC network only"
-  } 
+    description = "Allowing port for the NodePort Service"
+  }
 
   tags = {
     "Name"    = "${local.name_suffix}-Worker-Node-SG"
@@ -129,5 +129,3 @@ resource "aws_security_group" "worker_node_sg" {
     "Purpose" = "SG-for-Worker-Node"
   }
 }
-
-
