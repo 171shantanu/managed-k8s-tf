@@ -3,21 +3,6 @@ locals {
   name_suffix = "${var.environment}-${var.project}"
 }
 
-# declaring the aws module
-module "aws" {
-  source = "./aws"
-}
-
-# declaring the aws/instances module
-module "instances" {
-  source = "./aws/instances"
-}
-
-# declaring the aws/rds module
-module "rds" {
-  source = "./aws/rds"
-}
-
 # variable for project
 variable "project" {
   type        = string
@@ -25,9 +10,16 @@ variable "project" {
   default     = "Self Managed k8s"
 }
 
-# variable for environments
+# variable for environment
 variable "environment" {
   type        = string
   description = "environment"
   default     = "Live"
+}
+
+# variable for the EC2 instance type
+variable "rds_instance_type" {
+  type        = string
+  description = "RDS Instance Type"
+  default     = "db.t3.micro"
 }
