@@ -14,9 +14,7 @@ resource "aws_key_pair" "k8s_key" {
 
 # Generating a rsa key for the ec2 instances to get the public key
 resource "tls_private_key" "rsa_k8s" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-
+  algorithm = "ED25519"
   lifecycle {
     prevent_destroy = true
   }
