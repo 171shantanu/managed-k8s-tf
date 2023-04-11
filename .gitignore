@@ -35,4 +35,4 @@ override.tf.json
 *.pem
 
 #secrets.tf
-secrets.tf
+secrets.tfvars
