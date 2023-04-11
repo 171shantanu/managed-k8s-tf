@@ -33,3 +33,6 @@ override.tf.json
 
 # Adding .pem key file
 *.pem
+
+#secrets.tf
+secrets.tf

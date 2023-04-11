@@ -129,3 +129,30 @@ resource "aws_security_group" "worker_node_sg" {
     "Purpose" = "SG-for-Worker-Node"
   }
 }
+
+resource "aws_security_group" "db_security_group" {
+  name        = "Database_SG"
+  description = "Allows Acces on PORT 3306"
+  vpc_id      = aws_vpc.k8s_vpc.id
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = [aws_subnet.public_1.cidr_block, aws_subnet.public_2.cidr_block]
+    description = "Allowing access on port 3306 for MySQL"
+  }
+  egress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = [aws_subnet.public_1.cidr_block, aws_subnet.public_2.cidr_block]
+    description = "Allowing access on port 3306 for MySQL"
+  }
+
+  tags = {
+    "Name"    = "${local.name_suffix}-Database-SG"
+    "Ports"   = "3306"
+    "Purpose" = "SG-for-Database"
+  }
+}
