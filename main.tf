@@ -16,6 +16,9 @@ module "instances" {
 # declaring the aws/rds module
 module "rds" {
   source = "./aws/rds"
+
+  db_username = var.db_username
+  db_password = var.db_password
 }
 
 # variable for project
@@ -30,4 +33,18 @@ variable "environment" {
   type        = string
   description = "environment"
   default     = "Live"
+}
+
+# variable for the DB username
+variable "db_username" {
+  sensitive   = true
+  description = "Username for the Database"
+  type        = string
+}
+
+# variable for the DB password
+variable "db_password" {
+  sensitive   = true
+  description = "Password for the Database"
+  type        = string
 }
