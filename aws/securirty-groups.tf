@@ -21,11 +21,28 @@ resource "aws_security_group" "master_node_sg" {
 
   # Engress for port 22
   egress {
-    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
-    description = "Allowing SSH access from my computer"
     from_port   = 22
     protocol    = "tcp"
     to_port     = 22
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    description = "Allowing SSH access from my computer"
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    description = "Allowing 8080 port for jenkins access from my computer"
+  }
+
+  # Engress for port 22
+  egress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    description = "Allowing 8080 port for jenkins access from my computer"
   }
 
   # Ingress for port 6443
@@ -71,6 +88,36 @@ resource "aws_security_group" "master_node_sg" {
     from_port   = 10259
     to_port     = 10259
     protocol    = "tcp"
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allowing access from internet"
+  }
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allowing access from internet"
+  }
+
+    ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allowing access from internet"
+  }
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allowing access from internet"
   }
 
   tags = {

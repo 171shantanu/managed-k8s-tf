@@ -21,6 +21,10 @@ module "rds" {
   db_password = var.db_password
 }
 
+module "iam" {
+  source = "./aws/iam"
+}
+
 # variable for project
 variable "project" {
   type        = string
