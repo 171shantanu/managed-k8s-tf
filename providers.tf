@@ -18,7 +18,7 @@ provider "aws" {
   default_tags {
     tags = {
       managed_by = "Terraform Managed resource"
-      project    = "Self Managed K8s"
+      project    = "Self Managed Env"
     }
   }
 }
