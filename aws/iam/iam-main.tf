@@ -10,16 +10,9 @@ variable "project" {
   default     = "Self Managed Env"
 }
 
-# variable for environment
+# variable for environments
 variable "environment" {
   type        = string
   description = "environment"
   default     = "Live"
-}
-
-# variable for the EC2 instance type
-variable "rds_instance_type" {
-  type        = string
-  description = "RDS Instance Type"
-  default     = "db.t3.micro"
 }
