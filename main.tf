@@ -29,7 +29,7 @@ module "iam" {
 variable "project" {
   type        = string
   description = "Project Name"
-  default     = "Self Managed k8s"
+  default     = "Self Managed Env"
 }
 
 # variable for environments
