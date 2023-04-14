@@ -25,6 +25,6 @@ resource "aws_iam_role" "new_relic_role" {
   )
 
   tags = {
-    "Name" = "new-relic-role"
+    "Name" = "${local.name_suffix}-new-relic-role"
   }
 }
