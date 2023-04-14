@@ -28,4 +28,3 @@ resource "aws_iam_role" "new_relic_role" {
     "Name" = "new-relic-role"
   }
 }
-`
