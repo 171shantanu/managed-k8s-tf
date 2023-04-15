@@ -23,6 +23,21 @@ resource "aws_iam_role" "new_relic_role" {
       Version = "2012-10-17"
     }
   )
+  inline_policy {
+    name = "new-relic-budget-inline-policy"
+    policy = jsonencode({
+      Statement = [
+        {
+          "Action" : [
+            "budgets:ViewBudget"
+          ],
+          "Effect" : "Allow",
+          "Resource" : "*"
+          Version = "2012-10-17"
+        }
+      ]
+    })
+  }
 
   tags = {
     "Name" = "${local.name_suffix}-new-relic-role"
