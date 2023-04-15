@@ -21,8 +21,14 @@ module "rds" {
   db_password = var.db_password
 }
 
+# declaring the aws/iam module
 module "iam" {
   source = "./aws/iam"
+}
+
+# declaring the aws/s3 module
+module "s3" {
+  source = "./aws/s3"
 }
 
 # variable for project
