@@ -44,5 +44,3 @@ variable "environment" {
   description = "environment"
   default     = "Live"
 }
-
-`
