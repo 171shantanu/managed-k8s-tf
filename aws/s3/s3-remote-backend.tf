@@ -46,3 +46,10 @@ resource "aws_s3_object" "tf_backend" {
   key                    = "tf-backend/"
   server_side_encryption = "AES256"
 }
+
+# Creating an object resorce to store the remote state for new-relic project
+resource "aws_s3_object" "tf_backend_new_relic" {
+  bucket                 = aws_s3_bucket.tf_backend.id
+  key                    = "new-relic-backend/"
+  server_side_encryption = "AES256"
+}
