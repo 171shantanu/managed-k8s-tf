@@ -45,16 +45,4 @@ variable "environment" {
   default     = "Live"
 }
 
-# variable for the DB username
-variable "db_username" {
-  sensitive   = true
-  description = "Username for the Database"
-  type        = string
-}
-
-# variable for the DB password
-variable "db_password" {
-  sensitive   = true
-  description = "Password for the Database"
-  type        = string
-}
+`
