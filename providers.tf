@@ -9,6 +9,11 @@ terraform {
       version = ">=3.2.1"
     }
   }
+  backend "s3" {
+    bucket = "remotebackend-terraform"
+    key    = "tf-backend/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {
