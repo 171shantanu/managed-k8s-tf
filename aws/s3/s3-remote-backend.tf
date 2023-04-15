@@ -39,3 +39,10 @@ resource "aws_s3_bucket_public_access_block" "tf_backend" {
   restrict_public_buckets = true
 
 }
+
+# Creating an object resorce to store the remote state
+resource "aws_s3_object" "tf_backend" {
+  bucket                 = aws_s3_bucket.tf_backend.id
+  key                    = "tf-backend/"
+  server_side_encryption = "AES256"
+}
